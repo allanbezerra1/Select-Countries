@@ -30,11 +30,11 @@ async function fetchCountries() {
   const json = await res.json();
 
   allCountries = json.map((country) => {
-    const { name, population, flag, numericCode } = country;
+    const { translations, population, flag, numericCode } = country;
 
     return {
-      id: numericCode,
-      name,
+      id: translations.br,
+      name: translations.br,
       population,
       flag,
       formattedPopulation: formatNumber(population),
@@ -55,10 +55,15 @@ function render() {
 function renderCountryList() {
   let countriesHTML = "<div class='countries'>";
 
-  allCountries.forEach((country, index) => {
-    const { name, flag, id, formattedPopulation } = country;
+  allCountries
+    .sort((a, b) => {
+      return a.name.localeCompare(b.name);
+    })
+    // .filter((numericDesgraca) => numericDesgraca.id != null)
+    .forEach((country, index) => {
+      const { name, flag, id, formattedPopulation } = country;
 
-    const countryHTML = `
+      const countryHTML = `
       <div class='country'>
         <div>
            <a id="${id}" class="waves-effect waves-light btn">+</a>
@@ -75,9 +80,8 @@ function renderCountryList() {
       </div>
     `;
 
-    countriesHTML += countryHTML;
-  });
-
+      countriesHTML += countryHTML;
+    });
   tabCountries.innerHTML = countriesHTML;
 }
 
